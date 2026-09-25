@@ -93,6 +93,6 @@
   },
   "description": "Messango — professional web messenger (Next.js + Socket.IO + Prisma)",
   "engines": {
-    "node": ">=18.17"
+    "node": "22"
   }
 }
