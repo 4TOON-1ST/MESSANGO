@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  displayName  String
+  password     String
+  avatar       String?
+  bio          String?
+  isAdmin      Boolean  @default(false)
+  isBanned     Boolean  @default(false)
+  lastSeen     DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  messages      Message[]
+  participants  ConversationParticipant[]
+}
+
+model Conversation {
+  id          String   @id @default(cuid())
+  type        String   @default("dm") // dm | group
+  name        String?
+  avatar      String?
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  messages     Message[]
+  participants ConversationParticipant[]
+
+  @@index([type])
+}
+
+model ConversationParticipant {
+  id             String    @id @default(cuid())
+  userId         String
+  conversationId String
+  lastReadAt     DateTime?
+  joinedAt       DateTime  @default(now())
+
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conversation Conversation  @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, conversationId])
+  @@index([userId])
+  @@index([conversationId])
+}
+
+model Message {
+  id             String    @id @default(cuid())
+  conversationId String
+  senderId       String?
+  type           String    @default("text") // text | image | voice | file | system
+  content        String?
+  mediaUrl       String?
+  mediaName      String?
+  mediaSize      Int?
+  mediaDuration  Int?
+  mediaPeaks     String?
+  replyToId      String?
+  editedAt       DateTime?
+  deletedAt      DateTime?
+  createdAt      DateTime  @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender       User?        @relation(fields: [senderId], references: [id], onDelete: SetNull)
+  replyTo      Message?     @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: SetNull)
+  replies      Message[]    @relation("ReplyTo")
+
+  @@index([conversationId, createdAt])
+}
