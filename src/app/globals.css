@@ -173,10 +173,12 @@
 /* message bubble tails */
 .bubble-out {
   background: var(--chat-out);
+  color: var(--foreground);
   border-radius: 12px 4px 12px 12px;
 }
 .bubble-in {
   background: var(--card);
+  color: var(--foreground);
   border-radius: 4px 12px 12px 12px;
 }
 [dir="rtl"] .bubble-out {
