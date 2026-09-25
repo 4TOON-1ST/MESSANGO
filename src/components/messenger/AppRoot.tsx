@@ -23,11 +23,6 @@ export const ACCENTS = [
 
 export function applyAccent(value: string) {
   document.documentElement.style.setProperty('--brand', value)
-  document.documentElement.style.setProperty('--chat-out', `color-mix(in srgb, ${value} 16%, #f4f6f8)`)
-  document.documentElement.style.setProperty(
-    '--chat-out-dark',
-    `color-mix(in srgb, ${value} 22%, #1a2332)`
-  )
 }
 
 export default function AppRoot() {
